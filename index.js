@@ -9,7 +9,7 @@ const obj=JSON.parse(h);
   {
   const newcard1=generate(obj[i]);
   taskContainer.insertAdjacentHTML("beforeend",newcard1);
-store.push(obj[i]);
+
 
 }
 
@@ -21,16 +21,14 @@ function generate(element)
    ` <div class="col-md-6 col-lg-4">
 <div class="card text-center">
   <div class="card-header d-flex justify-content-end gap-2 ">
-      <button type="button" class="btn btn-outline-success"  ><i class="fas fa-pencil-alt"  ></i></button>
+      <button type="button" class="btn btn-outline-success"  id=${element.id} onclick="edit.apply(this,arguments)"  ><i class="fas fa-pencil-alt" id=${element.id} onclick="edit.apply(this,arguments)"  ></i></button>
 
-      <button type="button" class="btn btn-outline-danger"  ><i class="fas fa-trash-alt"  id=${element.id}  onclick="delet.apply(this,arguments)"  ></i></button>
-
-  
+      <button type="button" class="btn btn-outline-danger" id=${element.id}  onclick="delet.apply(this,arguments)"  ><i class="fas fa-trash-alt"  id=${element.id}  onclick="delet.apply(this,arguments)"  ></i></button>
   </div>
   <img src=${element.imageurl}>
   <div class="card-body">
-.
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+.  <h5 class="card-title">${element.tasktitle}</h5><hr>
+<p class="card-text" >${element.taskdescription}</p>
   </div>
   <div class="card-footer text-muted ">
       <button type="button" class="btn btn-primary float-end">open task</button>
@@ -74,4 +72,28 @@ taskContainer.removeChild(event.target.parentNode.parentNode.parentNode);
 
   }
   
+}
+function edit(event)
+{
+event=window.event;
+const id=event.target.id;
+const tag=event.target.tagname;
+let parentelement;
+if(tag==="BUTTON")
+{
+ parentelement= event.target.parentNode.parentNode;
+
+ let tasktitle=parentelement.childNodes[5].childNodes[1];
+ let taskdescription=parentelement.childNodes[5].childNodes[4];
+}
+else{
+parentelement= event.target.parentNode.parentNode.parentNode;
+let tasktitle=parentelement.childNodes[5].childNodes[1];
+let taskdescription=parentelement.childNodes[5].childNodes[4];
+let buuton=parentelement.childNodes[7].childNodes[1];
+
+tasktitle.setAttribute("contenteditable","true");
+taskdescription.setAttribute("contenteditable","true");
+buuton.innerHTML="Save changes";
+}
 }
