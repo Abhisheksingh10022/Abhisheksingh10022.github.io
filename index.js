@@ -1,6 +1,5 @@
  const taskContainer=document.querySelector(".task_container");
 let store=[];
-
 function load()
 {
   const h=localStorage.getItem("tasky");
@@ -18,7 +17,7 @@ function generate(element)
 {
  
   const card=
-   ` <div class="col-md-6 col-lg-4">
+   ` <div class="col-md-6 col-lg-4" id=${element.id} >
 <div class="card text-center">
   <div class="card-header d-flex justify-content-end gap-2 ">
       <button type="button" class="btn btn-outline-success"  id=${element.id} onclick="edit.apply(this,arguments)"  ><i class="fas fa-pencil-alt" id=${element.id} onclick="edit.apply(this,arguments)"  ></i></button>
@@ -31,7 +30,7 @@ function generate(element)
 <p class="card-text" >${element.taskdescription}</p>
   </div>
   <div class="card-footer text-muted ">
-      <button type="button" class="btn btn-primary float-end">open task</button>
+      <button type="button" id=${element.id} class="btn btn-primary float-end">open task</button>
   </div>
 </div>
 </div>`;
@@ -54,13 +53,22 @@ store.push(taskData);
 localStorage.setItem("tasky",JSON.stringify(store));
 }
 function delet(event)
-{event=window.event;
+{const ele=localStorage.getItem("tasky");
+const cards=JSON.parse(ele);
+  event=window.event;
   const tag=event.target.tagName;
    const tarid=event.target.id;
-  store= store.filter((obj)=>{
-     tarid!==obj.id
-   });
-   localStorage.setItem("tasky",JSON.stringify(store));
+   console.log(cards);
+ console.log(tarid);
+ const arr=[];
+ for(var i=0;i<cards.length;i++)
+{
+  if(cards[i].id!==tarid)
+  {
+    arr.push(cards[i]);
+  }
+ 
+}
   if(tag==="BUTTON")
   {
 taskContainer.removeChild(event.target.parentNode.parentNode.parentNode);
@@ -70,30 +78,70 @@ taskContainer.removeChild(event.target.parentNode.parentNode.parentNode);
   {
   taskContainer.removeChild(event.target.parentNode.parentNode.parentNode.parentNode);
 
-  }
-  
+  }  localStorage.setItem("tasky",JSON.stringify(arr));
+
 }
 function edit(event)
 {
 event=window.event;
 const id=event.target.id;
-const tag=event.target.tagname;
+const tag=event.target.tagName;
 let parentelement;
+let tasktitle;
+let taskdescription;
+let buuton;
 if(tag==="BUTTON")
 {
  parentelement= event.target.parentNode.parentNode;
 
- let tasktitle=parentelement.childNodes[5].childNodes[1];
- let taskdescription=parentelement.childNodes[5].childNodes[4];
+  tasktitle=parentelement.childNodes[5].childNodes[1];
+  taskdescription=parentelement.childNodes[5].childNodes[4];
 }
 else{
 parentelement= event.target.parentNode.parentNode.parentNode;
-let tasktitle=parentelement.childNodes[5].childNodes[1];
-let taskdescription=parentelement.childNodes[5].childNodes[4];
-let buuton=parentelement.childNodes[7].childNodes[1];
+ tasktitle=parentelement.childNodes[5].childNodes[1];
+ taskdescription=parentelement.childNodes[5].childNodes[4];
 
+}
+buuton=parentelement.childNodes[7].childNodes[1];
 tasktitle.setAttribute("contenteditable","true");
 taskdescription.setAttribute("contenteditable","true");
+buuton.setAttribute("onclick","saveeditchanges.apply(this,arguments)");
 buuton.innerHTML="Save changes";
 }
+function saveeditchanges(event)
+{
+  event=window.event;
+const id=event.target.id;
+let parent;
+let tasktitle;
+let taskdescription;
+  parent=event.target.parentNode.parentNode;
+  taskdescription=parent.childNodes[5].childNodes[4];
+  tasktitle=parent.childNodes[5].childNodes[1];
+  const updatedata={
+    tasktitle:tasktitle.innerHTML,
+    taskdescription:taskdescription.innerHTML,
+  }
+  let gstor=localStorage.getItem("tasky");
+  let gstore=JSON.parse(gstor);
+gstore=gstore.map((item)=>{
+  if(item.id===id)
+  {return{
+    id:item.id,
+    imageurl:item.imageurl,
+    tasktitle:updatedata.tasktitle,
+    tasktype:item.tasktype,
+    taskdescription:updatedata.taskdescription,
+  };
+  }
+  return item;
+});
+localStorage.setItem("tasky",JSON.stringify(gstore));
+tasktitle.setAttribute("contenteditable","false");
+taskdescription.setAttribute("contenteditable","false");
+buuton.innerHTML="open task";
 }
+
+
+
