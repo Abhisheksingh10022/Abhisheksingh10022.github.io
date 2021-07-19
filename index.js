@@ -58,8 +58,7 @@ const cards=JSON.parse(ele);
   event=window.event;
   const tag=event.target.tagName;
    const tarid=event.target.id;
-   console.log(cards);
- console.log(tarid);
+ 
  const arr=[];
  for(var i=0;i<cards.length;i++)
 {
@@ -106,8 +105,9 @@ parentelement= event.target.parentNode.parentNode.parentNode;
 buuton=parentelement.childNodes[7].childNodes[1];
 tasktitle.setAttribute("contenteditable","true");
 taskdescription.setAttribute("contenteditable","true");
-buuton.setAttribute("onclick","saveeditchanges.apply(this,arguments)");
 buuton.innerHTML="Save changes";
+buuton.setAttribute("onclick","saveeditchanges.apply(this,arguments)");
+
 }
 function saveeditchanges(event)
 {
@@ -116,6 +116,7 @@ const id=event.target.id;
 let parent;
 let tasktitle;
 let taskdescription;
+let button;
   parent=event.target.parentNode.parentNode;
   taskdescription=parent.childNodes[5].childNodes[4];
   tasktitle=parent.childNodes[5].childNodes[1];
@@ -140,7 +141,8 @@ gstore=gstore.map((item)=>{
 localStorage.setItem("tasky",JSON.stringify(gstore));
 tasktitle.setAttribute("contenteditable","false");
 taskdescription.setAttribute("contenteditable","false");
-buuton.innerHTML="open task";
+button=parent.childNodes[7].childNodes[1];
+button.innerHTML="open task";
 }
 
 
